@@ -13,13 +13,8 @@ const app = express();
 
 app.use(
   helmet({
+    referrerPolicy: { policy: "no-referrer" },
     contentSecurityPolicy: false,
-    /*contentSecurityPolicy: {
-      directives: {
-        'default-src': ["'self'"],
-        'frame-ancestors': ["'self'", `https://mc.${process.env.STACK}.exacttarget.com`, `https://jbinteractions.${process.env.STACK}.marketingcloudapps.com`],
-      },
-    },*/
   }),
 );
 
