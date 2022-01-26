@@ -10,6 +10,7 @@ const routes = require('./routes/index');
 const activityRouter = require('./routes/activity');
 
 const app = express();
+app.use(helmet())
 app.use(function (req, res, next) {
   res.setHeader(
     'Content-Security-Policy',
