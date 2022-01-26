@@ -10,15 +10,13 @@ const routes = require('./routes/index');
 const activityRouter = require('./routes/activity');
 
 const app = express();
-app.use(helmet())
-app.use(function (req, res, next) {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
-  );
-  next();
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
 });
-/*app.use(
+app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
@@ -27,7 +25,7 @@ app.use(function (req, res, next) {
       },
     },
   }),
-);*/
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
