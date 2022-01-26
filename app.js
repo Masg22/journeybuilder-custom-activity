@@ -10,12 +10,7 @@ const routes = require('./routes/index');
 const activityRouter = require('./routes/activity');
 
 const app = express();
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -26,17 +21,6 @@ app.use(
     },
   }),
 );
-app.use(function (req, res, next) {
-  res.setHeader(
-    'Report-To',
-    '{"group":"csp-endpoint","max_age":10886400,"endpoints":[{"url":"http://your_server_ip:5500/__cspreport__"}],"include_subdomains":true}'
-  );
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com; script-src 'self' https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/ 'sha256-INJfZVfoUd61ITRFLf63g+S/NJAfswGDl15oK0iXgYM='; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css; frame-src 'self' https://www.youtube.com https://youtube.com; report-to csp-endpoint; report-uri /__cspreport__;"
-  );
-  next();
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -80,5 +64,18 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-module.exports = app;
-});
+module.exports = (request, response, next) => {
+    // http://expressjs.com/en/4x/api.html#res.set
+    response.set({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+    });
+
+    // intercept OPTIONS method
+    if(request.method === 'OPTIONS') {
+        response.send(200);
+    } else {
+        next();
+    }
+};
