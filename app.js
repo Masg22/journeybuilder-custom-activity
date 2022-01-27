@@ -10,7 +10,16 @@ const routes = require('./routes/index');
 const activityRouter = require('./routes/activity');
 
 const app = express();
-app.use(helmet.frameguard({ action: 'SAMEORIGIN' }));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        'default-src': ["'self'"],
+        'frame-ancestors': ["'self'", `https://mc.${process.env.STACK}.exacttarget.com`, `https://jbinteractions.${process.env.STACK}.marketingcloudapps.com`],
+      },
+    },
+  }),
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
